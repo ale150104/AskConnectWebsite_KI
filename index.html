@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ASK CONNECT - Intelligente Automatisierung der Zukunft</title>
     <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+      <link rel="icon" type="image/x-icon" href="logo2.png">
 
     <style>
         :root{
@@ -1630,27 +1631,27 @@
     </section>
 
     <!-- Contact Section -->
-    <!-- <section id="contact">
+    <section id="contact">
         <div class="section-header">
             <h2>Kontaktiere uns</h2>
             <p>Bereit für die KI-Revolution? Lass uns sprechen!</p>
         </div>
         <form class="contact-form">
             <div class="form-group">
-                <input type="text" placeholder="Dein Name" required>
+                <input type="text" id="input_name" placeholder="Dein Name" required>
             </div>
             <div class="form-group">
-                <input type="email" placeholder="Deine E-Mail" required>
+                <input type="email" id="input_email" placeholder="Deine E-Mail" required>
             </div>
             <div class="form-group">
-                <input type="text" placeholder="Unternehmen (optional)">
+                <input type="text" id="input_company" placeholder="Unternehmen (optional)">
             </div>
             <div class="form-group">
-                <textarea placeholder="Beschreibe dein Projekt..." rows="5" required></textarea>
+                <textarea id="input_text" placeholder="Beschreibe dein Projekt..." rows="5" required></textarea>
             </div>
             <button type="submit" class="cta-button">Nachricht senden</button>
         </form>
-    </section> -->
+    </section>
 
     <!-- Footer -->
     <footer>
@@ -1708,7 +1709,7 @@
     <script type="module">
       import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
       createChat({
-        webhookUrl: 'https://n8n.askconnect.de/webhook/f5def597-32ac-40e3-b4cb-07781bd86197/chat',
+        webhookUrl: 'https://n8n.askconnect.de/webhook/b2c58a69-698b-4b3f-9642-5b0a7b710d33/chat',
         webhookConfig: {
           method: 'POST',
           headers: {}
@@ -1826,26 +1827,55 @@
         });
 
         // Form submission
-        //document.querySelector('.contact-form').addEventListener('submit', function(e) {
-        //    e.preventDefault();
-        //    
-        //    // Simple animation for form submission
-        //    const button = this.querySelector('button');
-        //    const originalText = button.textContent;
-        //    button.textContent = 'Wird gesendet...';
-        //    button.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
-        //    button.disabled = true;
-        //    
-        //    setTimeout(() => {
-        //        button.textContent = 'Gesendet! ✓';
-        //        setTimeout(() => {
-        //            button.textContent = originalText;
-        //            button.style.background = 'linear-gradient(45deg, #00d4ff, #ff006e)';
-        //            button.disabled = false;
-        //            this.reset();
-        //        }, 2000);
-        //    }, 1500);
-        //});
+        document.querySelector('.contact-form').addEventListener('submit', function(e) {
+           e.preventDefault();
+           
+           // Simple animation for form submission
+           const button = this.querySelector('button');
+           const originalText = button.textContent;
+           button.textContent = 'Wird gesendet...';
+           button.style.background = 'linear-gradient(45deg, #28a745, #20c997)';
+           button.disabled = true;
+
+           let nameOfRequestingUser = document.getElementById('input_name').value;
+           let emailOfRequestingUser = document.getElementById('input_email').value;
+           let companyOfRequestingUser = document.getElementById('input_company').value;
+           let textOfRequestingUser = document.getElementById('input_text').value;
+                      
+
+           fetch('https://n8n.askconnect.de/webhook/d5ff5476-bdea-48c7-b5ac-4711f0ca2798', {
+                method: 'POST',
+                headers: {
+                'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                name: nameOfRequestingUser,
+                email: emailOfRequestingUser,
+                company: companyOfRequestingUser,
+                description: textOfRequestingUser
+                })
+                })
+                .then(data => {
+                    button.textContent = 'Gesendet! ✓';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = 'linear-gradient(45deg, #00d4ff, #ff006e)';
+                        button.disabled = false;
+                        this.reset();
+                    }, 2000);
+                })
+                .catch(error => {
+                    button.textContent = "Ein Fehler ist aufgetreten";
+                    button.style.background = 'linear-gradient(45deg, #ffc1c1, #ff7a7a)';
+                    setTimeout(() => {
+                        button.textContent = originalText;
+                        button.style.background = 'linear-gradient(45deg, #00d4ff, #ff006e)';
+                        button.disabled = false;
+                        this.reset();
+                    }, 2000);
+                });
+
+        });
 
         // Intersection Observer for animations
         const observerOptions = {
@@ -2010,21 +2040,21 @@
 
         // Enhanced contact form validation
         const contactForm = document.querySelector('.contact-form');
-        // const inputs = contactForm.querySelectorAll('input, textarea');
+        const inputs = contactForm.querySelectorAll('input, textarea');
 
-        // inputs.forEach(input => {
-        //     input.addEventListener('blur', () => {
-        //         if (input.hasAttribute('required') && !input.value.trim()) {
-        //             input.style.borderColor = '#ff006e';
-        //         } else {
-        //             input.style.borderColor = 'rgba(0, 212, 255, 0.3)';
-        //         }
-        //     });
+        inputs.forEach(input => {
+            input.addEventListener('blur', () => {
+                if (input.hasAttribute('required') && !input.value.trim()) {
+                    input.style.borderColor = '#ff006e';
+                } else {
+                    input.style.borderColor = 'rgba(0, 212, 255, 0.3)';
+                }
+            });
 
-        //     input.addEventListener('focus', () => {
-        //         input.style.borderColor = '#00d4ff';
-        //     });
-        // });
+            input.addEventListener('focus', () => {
+                input.style.borderColor = '#00d4ff';
+            });
+        });
 
         // Performance optimization: Throttle scroll events
         let ticking = false;
